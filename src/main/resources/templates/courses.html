@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Courses | Learning Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: #f3f4f6; /* Soft grey background like your photo */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #1f2937;
+        }
+
+        .dashboard-container {
+            text-align: center;
+            width: 100%;
+            max-width: 1000px;
+            padding: 20px;
+        }
+
+        /* The blue heading from your image */
+        h1 {
+            font-size: 3rem;
+            color: #2563eb; 
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            font-size: 1.1rem;
+            margin-bottom: 60px;
+        }
+
+        /* Grid layout for the 4 courses */
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            justify-items: center;
+        }
+
+        /* Styling for each course card to look like your laptop screen */
+        .course-card {
+            text-decoration: none;
+            color: #374151;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.3s ease, color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .course-card:hover {
+            transform: translateY(-10px);
+            color: #2563eb;
+        }
+
+        /* Placeholder for the icons in your image */
+        .icon-box {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3rem;
+        }
+
+        .course-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        /* Logout button at the bottom */
+        .logout-link {
+            margin-top: 80px;
+            display: inline-block;
+            color: #9ca3af;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+
+        .logout-link:hover {
+            color: #ef4444;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <h1>Welcome to Online Learning</h1>
+        <p class="subtitle">Choose a technology to master today.</p>
+
+        <div class="courses-grid">
+            <a th:href="@{/java}" class="course-card">
+                <div class="icon-box">☕</div>
+                <div class="course-name">Java Masterclass</div>
+            </a>
+
+            <a th:href="@{/python}" class="course-card">
+                <div class="icon-box">🐍</div>
+                <div class="course-name">Python Expert</div>
+            </a>
+
+            <a th:href="@{/html}" class="course-card">
+                <div class="icon-box">🌐</div>
+                <div class="course-name">HTML Structure</div>
+            </a>
+
+            <a th:href="@{/javascript}" class="course-card">
+                <div class="icon-box">📜</div>
+                <div class="course-name">JavaScript Core</div>
+            </a>
+        </div>
+
+        <a th:href="@{/logout}" class="logout-link">Logout Securely</a>
+    </div>
+
+</body>
+</html>

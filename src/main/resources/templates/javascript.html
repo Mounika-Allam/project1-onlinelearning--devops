@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>JS Core | Learning Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { margin: 0; display: flex; height: 100vh; background-color: #f3f4f6; overflow: hidden; }
+        .sidebar { width: 360px; background: white; border-right: 1px solid #e5e7eb; display: flex; flex-direction: column; padding: 25px; box-shadow: 4px 0 15px rgba(0,0,0,0.03); z-index: 10; }
+        h2 { font-size: 1.4rem; color: #d4ac0d; margin-bottom: 20px; font-weight: 700; }
+        .video-list { flex-grow: 1; overflow-y: auto; margin-bottom: 20px; padding-right: 5px; }
+        .video-item { padding: 14px; margin-bottom: 10px; background: #fdfcf0; border: 1px solid #f1c40f; border-radius: 10px; cursor: pointer; transition: 0.2s; font-weight: 500; color: #856404; display: flex; align-items: center; }
+        .video-item:hover { background: #f1c40f; color: white; transform: translateX(4px); }
+        .add-video-form { background: #f8fafc; padding: 15px; border-radius: 12px; border: 1px dashed #f1c40f; }
+        .add-video-form h4 { margin: 0 0 10px 0; font-size: 0.9rem; color: #64748b; }
+        input { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 0.85rem; }
+        .add-btn { width: 100%; padding: 10px; background: #f1c40f; color: #4b3b00; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; }
+        .main-display { flex-grow: 1; display: flex; align-items: center; justify-content: center; background-color: #f3f4f6; position: relative; }
+        .video-container { display: none; width: 92%; height: 88%; background: #000; border-radius: 16px; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4); overflow: hidden; }
+        iframe { width: 100%; height: 100%; border: none; }
+        .empty-state { text-align: center; color: #9ca3af; }
+        .exit-link { position: absolute; top: 20px; right: 25px; text-decoration: none; color: #94a3b8; font-weight: 500; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>JavaScript Core</h2>
+        <div class="video-list" id="lessonList">
+            <div class="video-item" onclick="playVid('https://www.youtube.com/embed/W6NZfCO5SIk', 'Syntax')">Lesson 1: JS Syntax</div>
+            <div class="video-item" onclick="playVid('https://www.youtube.com/embed/PkZNo7MFNFg', 'DOM')">Lesson 2: DOM Manipulation</div>
+            <div class="video-item" onclick="playVid('https://www.youtube.com/embed/jS4aFq5-91M', 'Functions')">Lesson 3: Arrow Functions</div>
+            <div class="video-item" onclick="playVid('https://www.youtube.com/embed/hdI2bqOjy3c', 'Async')">Lesson 4: Async & Await</div>
+        </div>
+        <div class="add-video-form">
+            <h4>+ Add Custom Lesson</h4>
+            <input type="text" id="vidTitle" placeholder="Lesson Title">
+            <input type="text" id="vidUrl" placeholder="YouTube Embed URL">
+            <button class="add-btn" onclick="addNewLesson()">Add to List</button>
+        </div>
+        <div style="margin-top: 20px; text-align: center;"><a th:href="@{/courses}" style="color: #64748b; text-decoration: none; font-size: 0.85rem;">← Return to Dashboard</a></div>
+    </div>
+    <div class="main-display">
+        <a th:href="@{/courses}" class="exit-link">Exit Player ✕</a>
+        <div id="waiting" class="empty-state">
+            <div style="font-size: 3rem; margin-bottom: 10px;">📜</div>
+            <p>Select a JS lesson to begin</p>
+        </div>
+        <div id="playerBox" class="video-container"><iframe id="videoIframe" allowfullscreen></iframe></div>
+    </div>
+
+    <script>
+        // --- PERMANENT STORAGE ---
+        
+        // Load saved lessons from browser storage
+        let savedJS = JSON.parse(localStorage.getItem('js_lessons_permanent')) || [];
+        let lessonCount = 4 + savedJS.length;
+
+        // Display saved lessons when page loads
+        window.onload = function() {
+            const list = document.getElementById('lessonList');
+            savedJS.forEach((lesson, index) => {
+                const newItem = document.createElement('div');
+                newItem.className = 'video-item';
+                let currentNum = 5 + index;
+                newItem.innerText = `Lesson ${currentNum}: ${lesson.title}`;
+                newItem.onclick = function() { playVid(lesson.url, lesson.title); };
+                list.appendChild(newItem);
+            });
+        };
+
+        function playVid(url, title) {
+            document.getElementById('waiting').style.display = 'none';
+            document.getElementById('playerBox').style.display = 'block';
+            document.getElementById('videoIframe').src = url;
+        }
+
+        function addNewLesson() {
+            const tInput = document.getElementById('vidTitle');
+            const uInput = document.getElementById('vidUrl');
+            
+            if (tInput.value === "" || uInput.value === "") return alert("Please fill both!");
+
+            let url = uInput.value;
+            // Fix normal link to embed link
+            if (url.includes("watch?v=")) {
+                url = url.replace("watch?v=", "embed/");
+            }
+
+            const newLesson = { title: tInput.value, url: url };
+
+            // Save to LocalStorage
+            savedJS.push(newLesson);
+            localStorage.setItem('js_lessons_permanent', JSON.stringify(savedJS));
+
+            // Add to UI
+            lessonCount++;
+            const list = document.getElementById('lessonList');
+            const newItem = document.createElement('div');
+            newItem.className = 'video-item';
+            newItem.innerText = `Lesson ${lessonCount}: ${newLesson.title}`;
+            newItem.onclick = function() { playVid(url, newLesson.title); };
+            
+            list.appendChild(newItem);
+            tInput.value = ""; uInput.value = "";
+        }
+    </script>
+</body>
+</html>
