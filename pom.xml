@@ -13,7 +13,7 @@
     </parent>
 
     <groupId>com.project</groupId>
-    <artifactId>cserestapi</artifactId>
+    <artifactId>onlinelearning</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>onlinelearning</name>
     <description>Spring Boot Online Learning Project</description>

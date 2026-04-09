@@ -1,10 +1,6 @@
-FROM openjdk:17-jdk-slim
-
+FROM eclipse-temurin:17-jdk-alpine
 WORKDIR /app
 
-# Copy any jar from target folder
-COPY target/*.jar /app/cse.jar
-
+COPY target/onlinelearning-0.0.1-SNAPSHOT.jar /app/cse.jar
 EXPOSE 8083
-
-ENTRYPOINT ["java", "-jar", "/app/cse.jar"]
+CMD ["java", "-jar", "/app/cse.jar"]
